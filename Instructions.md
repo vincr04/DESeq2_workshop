@@ -73,8 +73,8 @@ dds <- DESeqDataSetFromMatrix(countData = cts,
 ## 3. Pre-filtering
 The genes with the lowest count numbers are likely to be almost absent from the cell culture that we are analysing. Removing these genes is not 100% essential, however having less gene might speed up the analysis. Here, we only do minimal filtering by removing genes for which we have less than 10 reads across all samples.
 ```
-keep <- rowSums(counts(dds)) >= 10 #gives a TRUE or FALSE value for each gene (row)
-dds <- dds[keep,]
+keep <- rowSums(counts(dds)) >= 10 #gives a TRUE or FALSE value for each gene (row): TRUE if there are more than 10 reads
+dds <- dds[keep,] #keep only genes with a TRUE value
 ```
 
 >How many genes were removed?
