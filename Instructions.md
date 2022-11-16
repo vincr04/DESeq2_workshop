@@ -159,6 +159,23 @@ To plot the gene with the lowest *padj*, you can replace *XXX* with `which.min(r
 >What command would you use to plot the gene with highest *log2FoldChange*?  
 >OPTIONAL - how would you plot this with ggplots?
 
+### Heatmap
+Often a heatmap is an ideal way of representing variation in expression across several genes. Here is an example (using `ggplot`) with the top 10 genes with the highest *log2FoldChange* and significant adjusted p-value. 
+```
+res.sig <- res[!is.na(res$padj) & res$padj<0.05,] # Filtering only significant results
+top10genes <- rownames(res.sig[rev(order(res.sig$log2FoldChange)),][1:10,]) # Selecting the genes with highest log2FoldChange
+top10counts <- counts(dds,normalized=TRUE)[top10genes,] # extract normalised counts for each gene
+top10counts <- as.data.frame(t(scale(t(top10counts)))) # calculate z-scores
+top10counts <- cbind(top10counts, Gene=rownames(top10counts)) # add extra column with gene name
+top10counts <- gather(top10counts, Treatment, Value, -Gene) # reshape data to use with ggplot
+
+ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) # create a plot
+  + geom_tile() # add tiles (for heatmap)
+  + scale_fill_gradient2(low="navy", mid="linen", high="darkred", na.value="transparent") # add colour scheme
+```
+> Can you recreate this heatmap for the 10 most downregulated genes? 
+> OPTIONAL - can you understand every part of the code above? Can you improve the process?
+
 ## 6. Log fold change shrinkage
 Genes with low counts are more likely to have high *log2FoldChange* values because the natural variation between samples may create artificial differences between samples. For example, in the table below, the *mean* count value for the treated samples is more than 4x lower than for the untreated sample for **Gene A**, but almost equal for **Gene B**, even though the *difference* in read counts between both samples is the same. This leads to a bias towards low-count genes having a high *log2FoldChange*, with **Gene A** having a higher *log2FoldChange* than **Gene B**. 
 
@@ -175,6 +192,7 @@ resLFC <- lfcShrink(dds, coef="condition_treated_vs_untreated", type="apeglm")
 plotMA(resLFC, ylim=c(-4,4), alpha=0.05)
 ```
 >What has changed between this plot and the previous one? 
+>Repeat some of the plots above with the LFC-shrinked data. Can you see any differences? 
 
 
 
