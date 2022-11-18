@@ -131,15 +131,15 @@ p <- ggplot(as.data.frame(res), aes(x=log2FoldChange, y=-log(padj)))
 p + geom_point()
 
 # And make it look a bit nicer
-p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) # adding some colour
-  + lims(y=c(0,40), x=c(-2.5,2.5)) # cropping X and Y axes
+p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) + # adding some colour
+    lims(y=c(0,40), x=c(-2.5,2.5)) # cropping X and Y axes
 
 # OPTIONAL: we can also add gene labels, using the `ggrepel` package
 install.packages("ggrepel")
 library("ggrepel")
-p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) # adding some colour
-  + lims(y=c(0,40), x=c(-2.5,2.5)) # cropping X and Y axes
-  + geom_text_repel(aes(x=log2FoldChange, y=-log(padj), label=ifelse(rownames(res)=="FBgn0038198", rownames(res), "")))
+p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) + # adding some colour
+    lims(y=c(0,40), x=c(-2.5,2.5)) + # cropping X and Y axes
+    geom_text_repel(aes(x=log2FoldChange, y=-log(padj), label=ifelse(rownames(res)=="FBgn0038198", rownames(res), "")))
 ```
 
 ### P-value histogram
@@ -169,9 +169,9 @@ top10counts <- as.data.frame(t(scale(t(top10counts)))) # calculate z-scores
 top10counts <- cbind(top10counts, Gene=rownames(top10counts)) # add extra column with gene name
 top10counts <- gather(top10counts, Treatment, Value, -Gene) # reshape data to use with ggplot
 
-ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) # create a plot
-  + geom_tile() # add tiles (for heatmap)
-  + scale_fill_gradient2(low="navy", mid="linen", high="darkred", na.value="transparent") # add colour scheme
+ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) + # create a plot
+    geom_tile() + # add tiles (for heatmap)
+    scale_fill_gradient2(low="navy", mid="linen", high="darkred", na.value="transparent") # add colour scheme
 ```
 > Can you recreate this heatmap for the 10 most downregulated genes? 
 > OPTIONAL - can you understand every part of the code above? Can you improve the process?
