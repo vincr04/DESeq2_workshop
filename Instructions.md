@@ -16,13 +16,16 @@ You should all have [RStudio](https://posit.co/downloads/) installed on your com
 
 Bioconductor also contains some 'pre-packaged' datasets that can be easily downloaded and used as examples. Today, we will work on the 'pasilla' dataset ([Brooks et al., Genome Research 2011](https://pubmed.ncbi.nlm.nih.gov/20921232/)) which explores the effects of RNAi knockdown of *pasilla*, a nuclear RNA binding protein implicated in splicing and ortholog of mammalian NOVA1 and NOVA2, on the transcriptome of cultured *Drosophila melanogaster* cells.
 
-As above, use Google to find out how to install the 'pasilla' dataset, and once this is done, don't forget to type `library("pasilla")` to load the package and the data. 
+As above, use Google to find out how to install the 'pasilla' dataset deom Bioconductor, and once this is done, don't forget to type `library("pasilla")` to load the package and the data. 
 
-### Additional packages required
+### Additional packages to install
 
 We will use [tidyverse](https://www.tidyverse.org/) to manipulate datasets. Tidyverse is available via CRAN, which means that you can install it from the 'Packages' tab on the top right of your screen in RStudio. Then, load the package. 
 
-[ggplot2](https://ggplot2.tidyverse.org/reference/ggplot.html) might be an old friend of yours. If it's already installed on your computer you can just load the package. Otherwise, you can also obtain ggplot2 *via* CRAN. 
+[ggplot2](https://ggplot2.tidyverse.org/reference/ggplot.html) might be an old friend of yours. If it's already installed on your computer you can just load the package. Otherwise, you can also obtain ggplot2 *via* CRAN. Then, load the package. 
+
+
+[WGCNA](https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/) is used for analysing gene expression correlation networks. It is available *via* CRAN. Then, load the package. 
 
 ## 2. Generate a *DESeqDataSet*
 
@@ -93,7 +96,7 @@ The actual command to run DESeq2 is pretty simple:
 ```
 dds <- DESeq(dds)
 ```
-This can take up to a minute, depending on your computer. The results are saved in the `dds` object and you can visualise a preview of the results by typing 
+This can run for up to a minute, depending on your computer. The results are saved in the `dds` object and you can visualise a preview of the results by typing 
 ```
 res <- results(dds)
 res
@@ -176,6 +179,15 @@ ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) + # create a plot
 > Can you recreate this heatmap for the 10 most downregulated genes? 
 > OPTIONAL - can you understand every part of the code above? Can you improve the process?
 
+### PCA
+Principal component analysis can be used to establish how different samples are from each other. Conveniently, the `plotPCA` function is included in DESeq2, but first, we need to transform the raw count data using *variance stabilising transformations* (*VST*), which produces normalised, log2 scale values. 
+```
+vsd <- vst(dds, blind=FALSE) # perform the variance stabilising transformations. We use blind=FALSE to calculate the 'within group' variabliity.
+head(assay(vsd), 3) # print the calculated values for the first three genes
+plotPCA(vsd, intgroup=c("condition", "type"))
+```
+> What do you conclude from this plot?
+
 ## 6. Log fold change shrinkage
 Genes with low counts are more likely to have high *log2FoldChange* values because the natural variation between samples may create artificial differences between samples. For example, in the table below, the *mean* count value for the treated samples is more than 4x lower than for the untreated sample for **Gene A**, but almost equal for **Gene B**, even though the *difference* in read counts between both samples is the same. This leads to a bias towards low-count genes having a high *log2FoldChange*, with **Gene A** having a higher *log2FoldChange* than **Gene B**. 
 
@@ -193,6 +205,8 @@ plotMA(resLFC, ylim=c(-4,4), alpha=0.05)
 ```
 >What has changed between this plot and the previous one? 
 >Repeat some of the plots above with the LFC-shrinked data. Can you see any differences? 
+
+## 7. Weighted Gene Correlation Network Analysis (WGCNA)
 
 
 
