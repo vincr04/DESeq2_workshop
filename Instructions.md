@@ -12,15 +12,11 @@ DESeq2 runs in R and is available as a package via [Bioconductor](bioconductor.o
 
 You should all have [RStudio](https://posit.co/downloads/) installed on your computer. Google 'DESeq2 Bioconductor' to find out how to install DESeq2. Once DESeq2 is installed, you need R to load the DESeq2 package by typing `library("DESeq2")`. *Remember, code is ALWAYS case-sensitive*. Once this is done, move to the next step.
 
-<br/>
-
 ### Get the data
 
 Bioconductor also contains some 'pre-packaged' datasets that can be easily downloaded and used as examples. Today, we will work on the 'pasilla' dataset ([Brooks et al., Genome Research 2011](https://pubmed.ncbi.nlm.nih.gov/20921232/)) which explores the effects of RNAi knockdown of *pasilla*, a nuclear RNA binding protein implicated in splicing and ortholog of mammalian NOVA1 and NOVA2, on the transcriptome of cultured *Drosophila melanogaster* cells.
 
 The data from this experiment is available as an R package. As above, use Google to find out how to install the `pasilla` package from Bioconductor, and once this is done, don't forget to type `library("pasilla")` to load the package and the data. 
-
-<br/>
 
 ### Additional packages to install
 
@@ -66,8 +62,6 @@ cts <- cts[, rownames(coldata)]
 
 > What do these commands do?  
 > Try and visualise the counts matrix and sample info again. What has changed?
-
-<br/>
 
 ### Build the *DESeqDataSet* 
 We can now load the **count matrix** and **sample info** into a new *DESeqDataSet*, which we will call `dds`. For this, we use the *DESeqDataSetFromMatrix* function, which is part of the DESeq2 package:
@@ -137,8 +131,6 @@ plotMA(res, ylim=c(-4,4), alpha=0.05)
 >What does this plot tell you? What happens if you use `alpha=0.01`?  
 >OPTIONAL - Can you recreate this plot using ggplots? 
 
-<br/>
-
 ### Volcano plot
 A volcano plot is a scatter plot representing the negative log of the *padj* over the *log2FoldChange*. As for the MA-plot, each gene is represented by a point, and a visualisation of the distribution for these two values can be obtained. DESeq2 does not include a function to make volcano plots, but we can easily make one using `ggplot`. 
 ```
@@ -158,16 +150,12 @@ p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) + # adding some colou
     geom_text_repel(aes(x=log2FoldChange, y=-log(padj), label=ifelse(rownames(res)=="FBgn0038198", rownames(res), "")))
 ```
 
-<br/>
-
 ### P-value histogram
 Now let's plot a histogram of the adjusted p-values
 ```
 hist(res$padj,breaks = 100); abline(v=0.05,col="red")
 ```
 >What does this plot tell us?  
-
-<br/>
 
 ### Plot normalised counts for specific genes
 Using the following command, you can plot the normalised counts between conditions for any gene you like (just replace *XXX* with the name of your gene of choice). 
@@ -179,8 +167,6 @@ To plot the gene with the lowest *padj*, you can replace *XXX* with `which.min(r
 >What command would you use to plot the gene with highest *log2FoldChange*?  
 >Can you confirm that the knock down of this gene was indeed successful? Note: you need to search [FlyBase](flybase.org) to find the FlyBase ID (FBgn) for the *pasilla* gene. 
 >OPTIONAL - how would you plot this with ggplots?
-
-<br/>
 
 ### Heatmap
 Often a heatmap is an ideal way of representing variation in expression across several genes. Here is an example (using `ggplot`) with the top 10 genes with the highest *log2FoldChange* and significant adjusted p-value. 
@@ -198,8 +184,6 @@ ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) + # create a plot
 ```
 > Can you recreate this heatmap for the 10 most downregulated genes? 
 > OPTIONAL - can you understand every part of the code above? Can you improve the process?
-
-<br/>
 
 ### PCA
 Principal component analysis can be used to establish how different samples are from each other. Conveniently, the `plotPCA` function is included in DESeq2, but first, we need to transform the raw count data using *variance stabilising transformations* (*VST*), which produces normalised, log2 scale values. 
@@ -242,8 +226,6 @@ Here, we will use the `clusterProfiler` package to perform GSEA, and the `msigdb
 
 First, install these three packages (from Bioconductor) and load the packages.  
 
-<br/>
-
 ### Generate gene set
 
 The `msigdbr_species()` command tells you what species are available in MSigDB. *Drosophila melanogaster* is one of them. However, within MSigDB there are several gene set collections, all generated differently. The 'hallmark' collection is a good starting point, as it was made from aggregating other gene sets to obtain a comprehensive and coherent gene set. We will therefore generate an R object for this gene set. 
@@ -253,8 +235,6 @@ head(Dm_hallmark_sets)
 ```
 > Take a moment to look at what information is available in this table.  
 
-<br/>
-
 ### Prepare the gene list
 
 Before performing GSEA, we need to create a vector with sorted *log2FoldChange* values, and the corresponding gene names. 
@@ -263,8 +243,6 @@ lfc_vector <- res$log2FoldChange
 names(lfc_vector) <- rownames(res)
 lfc_vector <- sort(lfc_vector, decreasing = TRUE)
 ```
-
-<br/>
 
 ### Run the GSEA
 
@@ -277,7 +255,7 @@ gsea_result_df %>% arrange(pvalue) %>% select(1:10) %>% head() # visualise the g
 We can see that only one gene set has a significant p-value, however after p-value adjustment this is no longer significant. 
 >Does that really mean that there is no significant gene set specifically enriched in our data? Could you get significant enrichment using another MSigDB collection? Or another gene set database?
 
-### Plot results
+### Plot the results
 
 Even if there is no significantly enriched gene set, we can always visualise GSEA results for the most enriched ones. 
 ```
@@ -298,5 +276,5 @@ The *pasilla* gene encodes a nuclear RNA binding protein implicated in mRNA spli
 <br/>
 
 <h1 align="center">The end</h1>
-<p align="center">(you are now an expert)</p>
+<p align="center">(you are now an expert!)</p>
 
