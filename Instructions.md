@@ -239,9 +239,9 @@ head(Dm_hallmark_sets)
 
 Before performing GSEA, we need to create a vector with sorted *log2FoldChange* values, and the corresponding gene names. 
 ```
-lfc_vector <- res$log2FoldChange
-names(lfc_vector) <- rownames(res)
-lfc_vector <- sort(lfc_vector, decreasing = TRUE)
+lfc_vector <- res$log2FoldChange # making a vector with log2FoldChange values
+names(lfc_vector) <- rownames(res) # naming each element of this vector with the corresponding gene name
+lfc_vector <- sort(lfc_vector, decreasing = TRUE) # sort the vector by log2FoldChange
 ```
 
 ### Run the GSEA
