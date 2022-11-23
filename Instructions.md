@@ -1,4 +1,4 @@
-# DESeq2_workshop
+# DESeq2 workshop
 December 2022
 
 In this workshop, we will use DESeq2 to analyse differential gene expression in an RNA-seq dataset. This simplified exercise is inspired by the [original DESeq2 vignette by Love, Anders and Huber](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
@@ -12,20 +12,23 @@ DESeq2 runs in R and is available as a package via [Bioconductor](bioconductor.o
 
 You should all have [RStudio](https://posit.co/downloads/) installed on your computer. Google 'DESeq2 Bioconductor' to find out how to install DESeq2. Once DESeq2 is installed, you need R to load the DESeq2 package by typing `library("DESeq2")`. *Remember, code is ALWAYS case-sensitive*. Once this is done, move to the next step.
 
+<br/>
+
 ### Get the data
 
 Bioconductor also contains some 'pre-packaged' datasets that can be easily downloaded and used as examples. Today, we will work on the 'pasilla' dataset ([Brooks et al., Genome Research 2011](https://pubmed.ncbi.nlm.nih.gov/20921232/)) which explores the effects of RNAi knockdown of *pasilla*, a nuclear RNA binding protein implicated in splicing and ortholog of mammalian NOVA1 and NOVA2, on the transcriptome of cultured *Drosophila melanogaster* cells.
 
-As above, use Google to find out how to install the 'pasilla' dataset deom Bioconductor, and once this is done, don't forget to type `library("pasilla")` to load the package and the data. 
+The data from this experiment is available as an R package. As above, use Google to find out how to install the `pasilla` package from Bioconductor, and once this is done, don't forget to type `library("pasilla")` to load the package and the data. 
+
+<br/>
 
 ### Additional packages to install
 
-We will use [tidyverse](https://www.tidyverse.org/) to manipulate datasets. Tidyverse is available via CRAN, which means that you can install it from the 'Packages' tab on the top right of your screen in RStudio. Then, load the package. 
+We will use [tidyverse](https://www.tidyverse.org/) to manipulate data. Tidyverse is available via CRAN, which means that you can install it from the 'Packages' tab on the top right of your screen in RStudio. Then, load the package. 
 
-[ggplot2](https://ggplot2.tidyverse.org/reference/ggplot.html) might be an old friend of yours. If it's already installed on your computer you can just load the package. Otherwise, you can also obtain ggplot2 *via* CRAN. Then, load the package. 
+[ggplot2](https://ggplot2.tidyverse.org/reference/ggplot.html) might be an old friend of yours. If it's already installed on your computer you can just load the package. Otherwise, you can also obtain `ggplot2` *via* CRAN. Then, load the package. 
 
-
-[WGCNA](https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/) is used for analysing gene expression correlation networks. It is available *via* CRAN. Then, load the package. 
+<br/>
 
 ## 2. Generate a *DESeqDataSet*
 
@@ -64,6 +67,8 @@ cts <- cts[, rownames(coldata)]
 > What do these commands do?  
 > Try and visualise the counts matrix and sample info again. What has changed?
 
+<br/>
+
 ### Build the *DESeqDataSet* 
 We can now load the **count matrix** and **sample info** into a new *DESeqDataSet*, which we will call `dds`. For this, we use the *DESeqDataSetFromMatrix* function, which is part of the DESeq2 package:
 ```
@@ -74,6 +79,8 @@ dds <- DESeqDataSetFromMatrix(countData = cts,
 
 >Here, we created a new object that contains count data and sample info. Type `dds` to display some info about the new object you created. What kind of information do you get?  
 >DESeq2 allows easy access to the key elements of a *DESeqDataSet*. For example, you can type `counts(dds)` to quickly view the **count matrix**.
+
+<br/>
 
 ## 3. Pre-filtering and changing reference levels
 The genes with the lowest count numbers are likely to be almost absent from the cell culture that we are analysing. Removing these genes is not 100% essential, however having less gene might speed up the analysis. Here, we only do minimal filtering by removing genes for which we have less than 10 reads across all samples.
@@ -89,6 +96,8 @@ dds <- dds[keep,] #keep only genes with a TRUE value
 dds$condition <- relevel(dds$condition, ref = "untreated")
 ```
 >Type `dds$condition` again. What has happened?
+
+<br/>
 
 ## 4. Running the differential expression analysis
 
@@ -116,6 +125,8 @@ We can add options to the `results` command. For example, `contrast` can be used
 
 `summary(res, alpha=0.05)` provides some interesting statistics about the data
 
+<br/>
+
 ## 5. Visualising the data
 
 ### MA-plot
@@ -125,6 +136,8 @@ plotMA(res, ylim=c(-4,4), alpha=0.05)
 ```
 >What does this plot tell you? What happens if you use `alpha=0.01`?  
 >OPTIONAL - Can you recreate this plot using ggplots? 
+
+<br/>
 
 ### Volcano plot
 A volcano plot is a scatter plot representing the negative log of the *padj* over the *log2FoldChange*. As for the MA-plot, each gene is represented by a point, and a visualisation of the distribution for these two values can be obtained. DESeq2 does not include a function to make volcano plots, but we can easily make one using `ggplot`. 
@@ -145,12 +158,16 @@ p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) + # adding some colou
     geom_text_repel(aes(x=log2FoldChange, y=-log(padj), label=ifelse(rownames(res)=="FBgn0038198", rownames(res), "")))
 ```
 
+<br/>
+
 ### P-value histogram
 Now let's plot a histogram of the adjusted p-values
 ```
 hist(res$padj,breaks = 100); abline(v=0.05,col="red")
 ```
 >What does this plot tell us?  
+
+<br/>
 
 ### Plot normalised counts for specific genes
 Using the following command, you can plot the normalised counts between conditions for any gene you like (just replace *XXX* with the name of your gene of choice). 
@@ -160,7 +177,10 @@ plotCounts(dds, gene=XXX, intgroup="condition")
 To plot the gene with the lowest *padj*, you can replace *XXX* with `which.min(res$padj)`. 
 
 >What command would you use to plot the gene with highest *log2FoldChange*?  
+>Can you confirm that the knock down of this gene was indeed successful? Note: you need to search [FlyBase](flybase.org) to find the FlyBase ID (FBgn) for the *pasilla* gene. 
 >OPTIONAL - how would you plot this with ggplots?
+
+<br/>
 
 ### Heatmap
 Often a heatmap is an ideal way of representing variation in expression across several genes. Here is an example (using `ggplot`) with the top 10 genes with the highest *log2FoldChange* and significant adjusted p-value. 
@@ -179,6 +199,8 @@ ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) + # create a plot
 > Can you recreate this heatmap for the 10 most downregulated genes? 
 > OPTIONAL - can you understand every part of the code above? Can you improve the process?
 
+<br/>
+
 ### PCA
 Principal component analysis can be used to establish how different samples are from each other. Conveniently, the `plotPCA` function is included in DESeq2, but first, we need to transform the raw count data using *variance stabilising transformations* (*VST*), which produces normalised, log2 scale values. 
 ```
@@ -187,6 +209,8 @@ head(assay(vsd), 3) # print the calculated values for the first three genes
 plotPCA(vsd, intgroup=c("condition", "type"))
 ```
 > What do you conclude from this plot?
+
+<br/>
 
 ## 6. Log fold change shrinkage
 Genes with low counts are more likely to have high *log2FoldChange* values because the natural variation between samples may create artificial differences between samples. For example, in the table below, the *mean* count value for the treated samples is more than 4x lower than for the untreated sample for **Gene A**, but almost equal for **Gene B**, even though the *difference* in read counts between both samples is the same. This leads to a bias towards low-count genes having a high *log2FoldChange*, with **Gene A** having a higher *log2FoldChange* than **Gene B**. 
@@ -206,10 +230,73 @@ plotMA(resLFC, ylim=c(-4,4), alpha=0.05)
 >What has changed between this plot and the previous one? 
 >Repeat some of the plots above with the LFC-shrinked data. Can you see any differences? 
 
-## 7. Weighted Gene Correlation Network Analysis (WGCNA)
+<br/>
 
+## 7. Gene-set enrichment analysis (GSEA)
 
+We can now tell which genes are differently regulated in *pasilla* knock-down cells, however this in itself does not provide much biological information. What would be interesting at this stage is to switch the focus of our analysis from individual genes onto biological pathways. For this, we can use gene-set enrichment analysis (GSEA), also called pathway enrichment analysis.  
 
+GSEA uses existing databases with genome-wide information about the characteristics of each gene, which enables grouping these genes into specific categories. The best known example of such database is the Gene Ontology (GO), which categorises (almost) all known genes according to their cellular component, molecular function, and biological process.  
 
+Here, we will use the `clusterProfiler` package to perform GSEA, and the `msigdbr` package, which contains gene sets from the [Molecuar Signatures Database (MSigDB)](https://www.gsea-msigdb.org/gsea/msigdb/index.jsp). We will also need the `org.Dm.eg.db` package to convert *Drosophila* gene identifiers.  
 
+First, install these three packages (from Bioconductor) and load the packages.  
+
+<br/>
+
+### Generate gene set
+
+The `msigdbr_species()` command tells you what species are available in MSigDB. *Drosophila melanogaster* is one of them. However, within MSigDB there are several gene set collections, all generated differently. The 'hallmark' collection is a good starting point, as it was made from aggregating other gene sets to obtain a comprehensive and coherent gene set. We will therefore generate an R object for this gene set. 
+```
+Dm_hallmark_sets <- msigdbr(species = "Drosophila melanogaster", category = "H")
+head(Dm_hallmark_sets)
+```
+> Take a moment to look at what information is available in this table.  
+
+<br/>
+
+### Prepare the gene list
+
+Before performing GSEA, we need to create a vector with sorted *log2FoldChange* values, and the corresponding gene names. 
+```
+lfc_vector <- res$log2FoldChange
+names(lfc_vector) <- rownames(res)
+lfc_vector <- sort(lfc_vector, decreasing = TRUE)
+```
+
+<br/>
+
+### Run the GSEA
+
+We use the `GSEA` function on the list of *log2FoldChange* values to 
+```
+gsea_results <- GSEA(geneList = lfc_vector, pvalueCutoff = 1, TERM2GENE = dplyr::select(Dm_hallmark_sets, gs_name, ensembl_gene))
+gsea_result_df <- data.frame(gsea_results@result) # make a data.frame with the results
+gsea_result_df %>% arrange(pvalue) %>% select(1:10) %>% head() # visualise the gene sets with the lowest p-values
+```
+We can see that only one gene set has a significant p-value, however after p-value adjustment this is no longer significant. 
+>Does that really mean that there is no significant gene set specifically enriched in our data? Could you get significant enrichment using another MSigDB collection? Or another gene set database?
+
+### Plot results
+
+Even if there is no significantly enriched gene set, we can always visualise GSEA results for the most enriched ones. 
+```
+topNES <- gsea_result_df %>% arrange(pvalue) %>% select(ID) %>% head(1) %>% pull() # shows the gene set with the highest NES and lowest p-value
+enrichplot::gseaplot(gsea_results, geneSetID = topNES, title = topNES)
+```
+> How do you interpret this plot?
+
+<br/>
+
+## 8. OPTIONAL - Differential isoform expression
+
+The *pasilla* gene encodes a nuclear RNA binding protein implicated in mRNA splicing. Therefore, we expect to record differential splicing events between the treated and untreated samples. To investigate this, download DEXSeq from Bioconductor, and follow the steps in the [DEXSeq vignette](https://bioconductor.org/packages/release/bioc/vignettes/DEXSeq/inst/doc/DEXSeq.html) (you can start from step 3.1.). 
+> How many genes can you find with significantly different exon usage?  
+> Read the [original *pasilla* paper](https://genome.cshlp.org/content/21/2/193.long). Does your analysis help you understand the findings from this paper?
+
+<br/>
+<br/>
+
+<h1 align="center">The end</h1>
+<p align="center">(you are now an expert)</p>
 
