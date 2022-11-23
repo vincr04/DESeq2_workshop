@@ -246,7 +246,7 @@ lfc_vector <- sort(lfc_vector, decreasing = TRUE) # sort the vector by log2FoldC
 
 ### Run the GSEA
 
-We use the `GSEA` function on the list of *log2FoldChange* values to 
+We use the `GSEA` function on the list of *log2FoldChange* values to calculate normalised enrichment scores, and associated p-values. 
 ```
 gsea_results <- GSEA(geneList = lfc_vector, pvalueCutoff = 1, TERM2GENE = dplyr::select(Dm_hallmark_sets, gs_name, ensembl_gene))
 gsea_result_df <- data.frame(gsea_results@result) # make a data.frame with the results
@@ -257,7 +257,7 @@ We can see that only one gene set has a significant p-value, however after p-val
 
 ### Plot the results
 
-Even if there is no significantly enriched gene set, we can always visualise GSEA results for the most enriched ones. 
+Even if there is no significantly enriched gene set, we can always visualise GSEA results for the most enriched set. 
 ```
 topNES <- gsea_result_df %>% arrange(pvalue) %>% select(ID) %>% head(1) %>% pull() # shows the gene set with the highest NES and lowest p-value
 enrichplot::gseaplot(gsea_results, geneSetID = topNES, title = topNES)
