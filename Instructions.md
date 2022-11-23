@@ -165,7 +165,7 @@ plotCounts(dds, gene=XXX, intgroup="condition")
 To plot the gene with the lowest *padj*, you can replace *XXX* with `which.min(res$padj)`. 
 
 >What command would you use to plot the gene with highest *log2FoldChange*?  
->Can you confirm that the knock down of this gene was indeed successful? Note: you need to search [FlyBase](flybase.org) to find the FlyBase ID (FBgn) for the *pasilla* gene. 
+>Can you confirm that the knock down of this gene was indeed successful? Note: you need to search [FlyBase](flybase.org) to find the FlyBase ID (FBgn) for the *pasilla* gene.  
 >OPTIONAL - how would you plot this with ggplots?
 
 ### Heatmap
