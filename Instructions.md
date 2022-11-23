@@ -253,7 +253,9 @@ gsea_result_df <- data.frame(gsea_results@result) # make a data.frame with the r
 gsea_result_df %>% arrange(pvalue) %>% select(1:10) %>% head() # visualise the gene sets with the lowest p-values
 ```
 We can see that only one gene set has a significant p-value, however after p-value adjustment this is no longer significant. 
->Does that really mean that there is no significant gene set specifically enriched in our data? Could you get significant enrichment using another MSigDB collection? Or another gene set database?
+>Does that really mean that there is no significant gene set specifically enriched in our data?  
+>Could you get significant enrichment using another MSigDB collection? Or another gene set database?  
+>OPTIONAL - run GSEA on another example dataset from the DOSE package (you can skip DESeq2 and obtain the genelist with log2FCs by typing `data(geneList, package="DOSE")`. This will generate a vector called `geneList` that you can use in the `GSEA` function. This is a human dataset and therefore you will need to generate a new gene set object, and change the TERM2GENE argument in the `GSEA` function.  
 
 ### Plot the results
 
