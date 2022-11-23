@@ -1,7 +1,7 @@
 # DESeq2 workshop
 December 2022
 
-In this workshop, we will use DESeq2 to analyse differential gene expression in an RNA-seq dataset. This simplified exercise is inspired by the [original DESeq2 vignette by Love, Anders and Huber](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+In this workshop, we will use DESeq2 to analyse differential gene expression in an example RNA-seq dataset. This simplified exercise is inspired by the [original DESeq2 vignette by Love, Anders and Huber](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
 ***
 
 ## 1. Preparation
