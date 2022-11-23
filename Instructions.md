@@ -264,7 +264,7 @@ topNES <- gsea_result_df %>% arrange(pvalue) %>% select(ID) %>% head(1) %>% pull
 enrichplot::gseaplot(gsea_results, geneSetID = topNES, title = topNES)
 ```
 > How do you interpret this plot?  
-> OPTIONAL - run GSEA on another example dataset from the DOSE package (you can skip DESeq2 and obtain the genelist with log2FCs by typing `data(geneList, package="DOSE")`. This will generate a vector called `geneList` that you can use in the `GSEA` function. This is a human dataset and therefore you will need to generate a new gene set object, and change the TERM2GENE argument in the `GSEA` function.  
+> OPTIONAL - run GSEA on another example dataset, for example data from the `DOSE` package, which contains data from a breast cancer study. You can skip DESeq2 and obtain the genelist with log2FCs by typing `data(geneList, package="DOSE")`. This will generate a vector called `geneList` that you can use in the `GSEA` function. This is a human dataset and therefore you will need to generate a new gene set object, and change the TERM2GENE argument in the `GSEA` function.  
 
 <br/>
 
