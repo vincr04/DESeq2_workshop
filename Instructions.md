@@ -222,9 +222,9 @@ We can now tell which genes are differently regulated in *pasilla* knock-down ce
 
 GSEA uses existing databases with genome-wide information about the characteristics of each gene, which enables grouping these genes into specific categories. The best known example of such database is the Gene Ontology (GO), which categorises (almost) all known genes according to their cellular component, molecular function, and biological process.  
 
-Here, we will use the `clusterProfiler` package to perform GSEA, and the `msigdbr` package, which contains gene sets from the [Molecuar Signatures Database (MSigDB)](https://www.gsea-msigdb.org/gsea/msigdb/index.jsp). We will also need the `org.Dm.eg.db` package to convert *Drosophila* gene identifiers.  
+Here, we will use the `clusterProfiler` package to perform GSEA, and the `msigdbr` package, which contains gene sets from the [Molecuar Signatures Database (MSigDB)](https://www.gsea-msigdb.org/gsea/msigdb/index.jsp). 
 
-First, install these three packages (from Bioconductor) and load the packages.  
+First, install these two packages (from Bioconductor) and load the packages.  
 
 ### Generate gene set
 
