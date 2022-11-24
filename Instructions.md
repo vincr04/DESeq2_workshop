@@ -222,31 +222,27 @@ We can now tell which genes are differently regulated in *pasilla* knock-down ce
 
 GSEA uses existing databases with genome-wide information about the characteristics of each gene, which enables grouping these genes into specific categories. The best known example of such database is the Gene Ontology (GO), which categorises (almost) all known genes according to their cellular component, molecular function, and biological process.  
 
-Here, we will use the `clusterProfiler` package to perform GSEA, and the `msigdbr` package, which contains gene sets from the [Molecuar Signatures Database (MSigDB)](https://www.gsea-msigdb.org/gsea/msigdb/index.jsp). 
+Here, we will use the `clusterProfiler` package to perform GSEA, and the `org.Dm.eg.db` database of genomic information, which contains GO information for all *Drosophila* genes.
 
-First, install these two packages (from Bioconductor) and load the packages.  
+First, install these (from Bioconductor) and load these two packages.  
 
-### Generate gene set
-
-The `msigdbr_species()` command tells you what species are available in MSigDB. *Drosophila melanogaster* is one of them. However, within MSigDB there are several gene set collections, all generated differently. The 'hallmark' collection is a good starting point, as it was made from aggregating other gene sets to obtain a comprehensive and coherent gene set. We will therefore generate an R object for this gene set. 
+### Prepare the data
+GO enrichment analysis requires a list of genes considered as significantly differently expressed. Here, we will select those genes from our DESeq2 analysis with *log2FoldChange*>0.5 (over-expressed) and *padj*<0.05. 
 ```
-Dm_hallmark_sets <- msigdbr(species = "Drosophila melanogaster", category = "H")
-head(Dm_hallmark_sets)
+res_filter <- filter(as.data.frame(res), log2FoldChange>0.5 & padj<0.05) #filtering the data into a new object
+gene <- na.omit(rownames(res_filter)) # we extract the list of differently expressed genes. 
 ```
-> Take a moment to look at what information is available in this table.  
+> How would you prepare a list of downregulated genes?
 
-### Prepare the gene list
+### Run the enrichment analysis
 
-Before performing GSEA, we need to create a vector with sorted *log2FoldChange* values, and the corresponding gene names. 
-```
-lfc_vector <- res$log2FoldChange # making a vector with log2FoldChange values
-names(lfc_vector) <- rownames(res) # naming each element of this vector with the corresponding gene name
-lfc_vector <- sort(lfc_vector, decreasing = TRUE) # sort the vector by log2FoldChange
-```
+We use the `enrichGO` function on to search for enriched categories. Using the `ont=BP` option, we specifically search trough **biological process** annotations. 
 
-### Run the GSEA
 
-We use the `GSEA` function on the list of *log2FoldChange* values to calculate normalised enrichment scores, and associated p-values. 
+CONTINUE HERE
+
+
+
 ```
 gsea_results <- GSEA(geneList = lfc_vector, pvalueCutoff = 1, TERM2GENE = dplyr::select(Dm_hallmark_sets, gs_name, ensembl_gene))
 gsea_result_df <- data.frame(gsea_results@result) # make a data.frame with the results
