@@ -148,15 +148,15 @@ p <- ggplot(as.data.frame(res), aes(x=log2FoldChange, y=-log(padj))) # 'res' nee
 p + geom_point() # this command represents the data as points.
 
 # And make it look a bit nicer
-p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) + # add some colour
-    lims(y=c(0,40), x=c(-2.5,2.5)) # crop X and Y axes
+p + geom_point(color=ifelse(res$padj<0.05 & abs(res$log2FoldChange)>0.5, "red", ifelse(abs(res$log2FoldChange)>0.5, "steelblue1", ifelse(res$padj<0.05, "steelblue4", "grey")))) + # adding some colour: if padj<0.05 and |log2FoldChange|>0.5, the points are red, if only one of the conditions is true, they are blue, otherwise they are grey.
+  lims(y=c(0,40), x=c(-2.5,2.5)) # cropping X and Y axes
 
 # OPTIONAL: we can also add gene labels, using the `ggrepel` package
 install.packages("ggrepel")
 library("ggrepel")
-p + geom_point(color=ifelse(res$padj<0.05, "red", "grey")) + # adding some colour
+p + geom_point(color=ifelse(res$padj<0.05 & abs(res$log2FoldChange)>0.5, "red", ifelse(abs(res$log2FoldChange)>0.5, "steelblue1", ifelse(res$padj<0.05, "steelblue4", "grey")))) + # add the colour
     lims(y=c(0,40), x=c(-2.5,2.5)) + # cropping X and Y axes
-    geom_text_repel(aes(x=log2FoldChange, y=-log(padj), label=ifelse(rownames(res)=="FBgn0038198", rownames(res), ""))) # add some text: if the gene is called "FBgn0038198", then print its name, otherwise print nothing.
+    geom_text_repel(aes(x=log2FoldChange, y=-log(padj), label=ifelse(rownames(res)=="FBgn0038198", rownames(res), ""))) # add text: if the gene is called "FBgn0038198", then print its name, otherwise print nothing.
 ```
 
 ### P-value histogram
