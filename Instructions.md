@@ -126,6 +126,15 @@ We can add options to the `results` command. For example, `contrast` can be used
 
 `summary(res, alpha=0.05)` provides some interesting statistics about the data
 
+### Size factors
+
+You probably remember from last week's lecture that DESeq2 calculates 'size factors' to normalise the data. Use Google to find out how to display the size factors for each sample. 
+
+You can access the raw counts and normalised counts by typing `counts(dds)` and `counts(dds, normalized=TRUE)`, respectively. 
+
+> Can you verify that the normalised counts are indeed the raw counts divided by the size factors? 
+> OPTIONAL: write your own R script to calculate size factors
+
 <br/>
 
 ## 5. Visualising the data
