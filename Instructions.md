@@ -13,7 +13,7 @@ There is no report to submit, so you can just focus on **understanding** how the
 
 ### Install the software
 
-DESeq2 runs in R and is available as a package via [Bioconductor](bioconductor.org), which is a large-scale project to develop, support, and disseminate open source software for bioinformatic data analysis. Many tools used by computational biologists are available there. 
+DESeq2 runs in R and is available as a package via [Bioconductor](https://www.bioconductor.org/), which is a large-scale project to develop, support, and disseminate open source software for bioinformatic data analysis. Many tools used by computational biologists are available there. 
 
 You should have [RStudio](https://posit.co/downloads/) installed on your computer. Google 'DESeq2 Bioconductor' to find out how to install DESeq2. Once DESeq2 is installed, you need R to load the DESeq2 package by typing `library("DESeq2")`. *Remember, code is ALWAYS case-sensitive*. Once this is done, move to the next step.
 
@@ -28,6 +28,8 @@ The data from this experiment is available as an R package. As above, use Google
 We will use [tidyverse](https://www.tidyverse.org/) to manipulate data. Tidyverse is available via CRAN, which means that you can install it from the 'Packages' tab on the top right of your screen in RStudio. Then, load the package. 
 
 [ggplot2](https://ggplot2.tidyverse.org/reference/ggplot.html) might be an old friend of yours. If it's already installed on your computer you can just load the package. Otherwise, you can also install `ggplot2` from CRAN. Then, load the package.  
+
+[apeglm](https://bioconductor.org/packages/release/bioc/html/apeglm.html) is an additional package needed for LFC shrinkage (more details below). Install the package *via* Bioconductor, and load it.  
 
 We will install additional packages for gene set enrichment analysis later. 
 
@@ -183,7 +185,7 @@ plotCounts(dds, gene=XXX, intgroup="condition")
 To plot the gene with the lowest *padj*, you can replace *XXX* with `which.min(res$padj)`. 
 
 >What command would you use to plot the gene with highest *log2FoldChange*?  
->Can you confirm that the knock down of this gene was indeed successful? Note: you need to search [FlyBase](flybase.org) to find the FlyBase ID (FBgn) for the *pasilla* gene.  
+>Can you confirm that the knock down of the *pasilla* gene was indeed successful? Note: you need to search [FlyBase](flybase.org) to find the FlyBase ID (FBgn) for the *pasilla* gene.  
 >OPTIONAL - how would you plot this with ggplot?
 
 ### Heatmap
@@ -201,7 +203,7 @@ ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) + # create a plot and 
     scale_fill_gradient2(low="navy", mid="linen", high="darkred", na.value="transparent") # add colour scheme
 ```
 > Can you recreate this heatmap for the 10 most downregulated genes? 
-> OPTIONAL - can you understand every part of the code above? Could you write a function in R to do this?
+> OPTIONAL - can you understand every part of the code above? 
 
 ### PCA
 Principal component analysis can be used to establish how different samples are from each other. Conveniently, the `plotPCA` function is included in DESeq2, but first, we need to transform the raw count data using *variance stabilising transformations* (*VST*), which produces normalised, log2 scale values. 
@@ -240,9 +242,9 @@ We can now tell which genes are differently regulated in *pasilla* knock-down ce
 
 GSEA uses existing databases that contain genome-wide information about the characteristics of each gene, and therefore categorises genes into specific groups of similar function. The best known example of such database is the Gene Ontology (GO), which categorises (almost) all known genes according to their **cellular component, molecular function, or biological process**.  
 
-Here, we will use the `clusterProfiler` package to perform GSEA, and the `org.Dm.eg.db` database of genomic information, which contains GO information for all *Drosophila* genes.
+Here, we will use the `clusterProfiler` package to perform GSEA, the `org.Dm.eg.db` database of genomic information, which contains GO information for all *Drosophila* genes, and the `enrichplot` package, which will allow us to plot gene networks.
 
-First, install (from Bioconductor) and load these two packages.  
+First, install (from Bioconductor) and load these three packages.  
 
 ### Prepare the data
 GO enrichment analysis requires a list of genes considered as significantly differently expressed. Here, we will select the genes with *log2FoldChange*>0.5 (up-regulated) and *padj*<0.05 from our DESeq2 analysis.  
@@ -261,7 +263,7 @@ ego <- clusterProfiler::enrichGO(gene          = gene, # the list of genes we ge
                                  OrgDb         = org.Dm.eg.db, # the database with GO information
                                  ont           = "BP", # we are searching the 'biological process' category
                                  keyType       = "ENSEMBL") # our genes are in ENSEMBL (= FlyBase ID) format
-head(ego@results) # print the first few lines of the results
+head(ego@result) # print the first few lines of the results
 ```
 > What information is contained in each column of this table?
 > Repeat the analysis for the cellular compartment (CC) and molecular function (MF) categories. What can you see?
