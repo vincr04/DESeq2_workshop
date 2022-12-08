@@ -29,7 +29,7 @@ We will use [tidyverse](https://www.tidyverse.org/) to manipulate data. Tidyvers
 
 [ggplot2](https://ggplot2.tidyverse.org/reference/ggplot.html) might be an old friend of yours. If it's already installed on your computer you can just load the package. Otherwise, you can also install `ggplot2` from CRAN. Then, load the package.  
 
-[apeglm](https://bioconductor.org/packages/release/bioc/html/apeglm.html) is an additional package needed for LFC shrinkage (more details below). Install the package *via* Bioconductor, and load it.  
+[apeglm](https://bioconductor.org/packages/release/bioc/html/apeglm.html) is an additional package needed for LFC shrinkage (more details below). Install the package from Bioconductor, and load it.  
 
 We will install additional packages for gene set enrichment analysis later. 
 
@@ -55,8 +55,8 @@ coldata <- coldata[,c("condition","type")] # we only keep the relevant column fr
 ```
 We can now visualise the **count matrix**, to make sure it actually contains our data.
 
->The count matrix likely contains several thousands of rows (one per gene). What command would you use to display only a few rows?  
->Can you tell how many rows and columns this table has? If you don't know, use Google  
+>The count matrix likely contains several thousands of rows (one per gene). What command would you use to display only the first few rows?  
+>Can you tell how many rows and columns this table has? If you don't know how to, use Google  
 
 We can also visualise the **sample information** (it is a small table so we can just display it entirely). 
 
@@ -116,7 +116,7 @@ res
 
 >Take a moment to look at the table in front of you. What information is in the header? Can you make sense of what each column represents?  
 >If you are struggling, the command `mcols(res)$description` conveniently provides more information about each column.  
->Can you find the gene with the highest/lowest *log2FoldChange*? And the gene with the lowest adjusted p-value? Hint: you can sort the table by the values of selected columns.  
+>Can you find the gene with the highest/lowest *log2FoldChange*? And the gene with the lowest adjusted p-value? Hint: you can sort the table according to the values of selected columns.  
 >Why are some *log2FoldChange* values negative?  
 >OPTIONAL - to avoid false positives (type I errors), the p-value is corrected with the Benjamini-Hochberg (BH) method. Use Google to find more about the BH method.  
 
@@ -196,9 +196,9 @@ top10genes <- rownames(res.sig[rev(order(res.sig$log2FoldChange)),][1:10,]) # Se
 top10counts <- counts(dds,normalized=TRUE)[top10genes,] # extract normalised counts for each gene
 top10counts <- as.data.frame(t(scale(t(top10counts)))) # calculate z-scores **note: to use the 'scale' function we need to transpose the table (invert rows and columns), and transpose it back again. 
 top10counts <- cbind(top10counts, Gene=rownames(top10counts)) # add extra column with gene name
-top10counts <- gather(top10counts, Treatment, Value, -Gene) # reshape data to use with ggplot
+top10counts <- gather(top10counts, Treatment, Z_score, -Gene) # reshape data to use with ggplot
 
-ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Value)) + # create a plot and provide information about axes. 'fill' indicates what information will be used to fill each tile of the heatmap
+ggplot(top10counts, aes(x=Treatment, y=Gene, fill=Z_score)) + # create a plot and provide information about axes. 'fill' indicates what information will be used to fill each tile of the heatmap
     geom_tile() + # add tiles
     scale_fill_gradient2(low="navy", mid="linen", high="darkred", na.value="transparent") # add colour scheme
 ```
@@ -224,7 +224,7 @@ Genes with low counts are more likely to have high *log2FoldChange* values becau
 |Gene A|10         |8          |4          |5          |1        |3        |1        |
 |Gene B|1010       |1008       |1004       |1005       |1001     |1003     |1001     |
 
-To correct for this, we can apply a DESeq2 function called `lfcShrink`. This function requires the user to enter a `coef`, which is an argument specifying the comparison to extract from the data. We can use the `resultsNames(dds)` command to display available `coef` options. We will select `"condition_treated_vs_untreated"`. 
+To correct for this, we apply a DESeq2 function called `lfcShrink`. This function requires the user to enter a `coef`, which is an argument specifying the comparison to extract from the data. The `resultsNames(dds)` command displays available `coef` options. We will select `"condition_treated_vs_untreated"`. 
 
 We can now run the `lfcShrink` function. The 'type' argument specifies the LFC shrinkage method. For our analysis, the more recent `apeglm` method is recommended.
 ```
@@ -232,7 +232,7 @@ resLFC <- lfcShrink(dds, coef="condition_treated_vs_untreated", type="apeglm")
 plotMA(resLFC, ylim=c(-4,4), alpha=0.05)
 ```
 >What has changed between this plot and the previous one? 
->Repeat some of the plots above using the LFC-shrinked data. Can you see any differences? 
+>Repeat some of the plots above using the LFC-shrunk data. Can you see any differences? 
 
 <br/>
 
