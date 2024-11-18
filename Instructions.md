@@ -1,5 +1,5 @@
 # DESeq2 workshop
-December 2023
+December 2024
 
 In this workshop, we will learn how to handle and process counts data from RNA-seq in R, and perform differential gene expression and gene set enrichment analysis. This simplified exercise is inspired by the [original DESeq2 vignette by Love, Anders and Huber](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html), the [DESeq2 Course Work page on R-bloggers](https://www.r-bloggers.com/2016/09/deseq2-course-work/) and the [DEXSeq vignette](https://bioconductor.org/packages/release/bioc/vignettes/DEXSeq/inst/doc/DEXSeq.html).  
 This document contains a mix of explainations in plain text, `elements of code that you can type in R`, and 
@@ -130,7 +130,7 @@ We can add options to the `results` command. For example, `contrast` can be used
 
 ### Size factors
 
-You probably remember from last week's lecture that DESeq2 calculates 'size factors' to normalise the data. Use Google to find out how to display the size factors for each sample. 
+You probably remember from the transcriptomics lecture that DESeq2 calculates 'size factors' to normalise the data. Use Google to find out how to display the size factors for each sample. 
 
 You can access the raw counts and normalised counts by typing `counts(dds)` and `counts(dds, normalized=TRUE)`, respectively. 
 
